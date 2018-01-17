@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3131.robot;
 
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -17,7 +18,8 @@ public class Teleop {
 	private double lowSpeed = 0.7;
 	private boolean useHighSpeed = true;
 	private DigitalInput bottomLimitSwitch = new DigitalInput(3);
-
+	AnalogInput rangefinder = new AnalogInput(0);
+	
 	
 	private static double deadband (double joystick, int power) {
 		if (joystick < 0 && power % 2 == 0) {
@@ -44,8 +46,18 @@ public class Teleop {
 		}
 	}
 	
+	private void rangeFinder() {
+		if(rangefinder.getValue() == 20) {
+			SmartDashboard.putNumber("Range Finder", 0);
+		}
+		else {
+			SmartDashboard.putNumber("Range Finder", (4800/(rangefinder.getValue() - 20)));
+		}
+	}
+	
 	public void teleopPeriodic() {
 		speedDrive();
+		rangeFinder();
 		SmartDashboard.putBoolean("Bottom Limit Switch", bottomLimitSwitch.get());
 	}
 
