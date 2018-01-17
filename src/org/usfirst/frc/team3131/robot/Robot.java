@@ -2,6 +2,7 @@ package org.usfirst.frc.team3131.robot;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -24,7 +25,7 @@ public class Robot extends IterativeRobot {
 	private SendableChooser<Integer> autoChooser;
 	private Preferences prefs;
 	private SendableChooser<Integer> encoderChooser;
-
+	//PowerDistributionPanel pdp = new PowerDistributionPanel();
 	
 	private double forwardTimeMS;
 	private double encoderDistanceInches;
@@ -132,6 +133,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		teleop.teleopPeriodic();
 		sendEncoderDataToSmartDashboard();
+		//SmartDashboard.putNumber("Power Distribution Panel ?", pdp.getCurrent(0));
 	}
     
     public void testPeriodic() {

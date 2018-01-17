@@ -47,11 +47,13 @@ public class Teleop {
 	}
 	
 	private void rangeFinder() {
-		if(rangefinder.getValue() == 20) {
+		int rangeFinderValue = rangefinder.getValue();
+		SmartDashboard.putNumber("raw range finder value", rangeFinderValue);
+		if(rangeFinderValue <= 20) {
 			SmartDashboard.putNumber("Range Finder", 0);
 		}
 		else {
-			SmartDashboard.putNumber("Range Finder", (4800/(rangefinder.getValue() - 20)));
+			SmartDashboard.putNumber("Range Finder", (4800/(rangeFinderValue - 20)));
 		}
 	}
 	
