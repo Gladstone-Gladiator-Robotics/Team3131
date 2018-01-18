@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3131.robot;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
@@ -20,7 +21,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 	private DifferentialDrive myRobot;
 	private Teleop teleop;
-	//private Encoder encRight;
+	private Encoder encRight= new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+	private Encoder encLeft= new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 	private AutoCommand[] commands;
 	private SendableChooser<Integer> autoChooser;
 	private Preferences prefs;
@@ -60,7 +62,9 @@ public class Robot extends IterativeRobot {
 	}
 	
 	private void sendEncoderDataToSmartDashboard() {
-		
+		SmartDashboard.putNumber("encRight", encRight.getDistance());
+
+		SmartDashboard.putNumber("encLeftt", encLeft.getDistance());
 	}
 
 	/**
