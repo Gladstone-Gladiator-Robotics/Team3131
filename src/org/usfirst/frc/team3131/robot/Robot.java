@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,6 +29,7 @@ public class Robot extends IterativeRobot {
 	private Preferences prefs;
 	private SendableChooser<Integer> encoderChooser;
 	//PowerDistributionPanel pdp = new PowerDistributionPanel();
+//	Ultrasonic ultrasonic = new Ultrasonic(4,4);
 	
 	private double forwardTimeMS;
 	private double encoderDistanceInches;
@@ -62,11 +64,11 @@ public class Robot extends IterativeRobot {
 	}
 	
 	private void sendEncoderDataToSmartDashboard() {
-		SmartDashboard.putNumber("encRight", encRight.getDistance());
+		SmartDashboard.putNumber("Right Encoder distance", encLeft.getDistance()); //Left and Right swapped, names in code are wrong:
+		SmartDashboard.putNumber("Left Encoder distance", encRight.getDistance()); //swap all instances of encLeft and encRight eventually
+		}
 
-		SmartDashboard.putNumber("encLeftt", encLeft.getDistance());
-	}
-
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -86,24 +88,20 @@ public class Robot extends IterativeRobot {
 		encoderChooser.addObject("Test", 1);
 		SmartDashboard.putData("Encoder Chooser", encoderChooser);
 		prefs = Preferences.getInstance();
+		encRight.setDistancePerPulse(getDistancePerPulse());
+		encLeft.setDistancePerPulse(getDistancePerPulse());
 		
-		//Encoder encRight;
-		//encRight = new Encoder(0, 1, true, Encoder.EncodingType.k4X);  // ports 2 and 3 weren't working
-		//encRight.setDistancePerPulse(getDistancePerPulse());
-
-		if (encoderChooser.getSelected() == 0) {
+/*		if (encoderChooser.getSelected() == 0) {
 			// Use Encoder Objects
 		}
 		else if (encoderChooser.getSelected() == 1) {
 			// Use DIO Objects for testing purposes
-		}
+		}*/
 	}
 
 	public void autonomousInit() { 
 		forwardTimeMS = prefs.getDouble("Forward Time in Milliseconds", 4000);
 		encoderDistanceInches = prefs.getDouble("Encoder Distance in Inches", 60);
-		
- 		//encRight.reset();
 		commands = getAutoCommands();
 	}
 
@@ -131,12 +129,14 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit(){
- 		//encRight.reset();
-    } 
+		encRight.reset();
+		encLeft.reset();
+	    } 
 	
 	public void teleopPeriodic() {
 		teleop.teleopPeriodic();
 		sendEncoderDataToSmartDashboard();
+//		SmartDashboard.putNumber("Ultrasonic(inches)", ultrasonic.getRangeInches());
 		//SmartDashboard.putNumber("Power Distribution Panel ?", pdp.getCurrent(0));
 	}
     

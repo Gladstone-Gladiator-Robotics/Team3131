@@ -97,7 +97,7 @@ public class Teleop {
 	public void teleopPeriodic() {
 		speedDrive();
 		infraRedRangeFinder();
-		ultraSonicAnalog();
+		//ultraSonicAnalog();
 	}
 
 }
