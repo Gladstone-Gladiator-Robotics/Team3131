@@ -1,17 +1,23 @@
 package org.usfirst.frc.team3131.robot;
 
+import java.io.Console;
+
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class ForwardDistance implements AutoCommand{
-	ForwardDistance(RobotDrive myRobot, Encoder encRight, double distanceInInches) {
+	ForwardDistance(DifferentialDrive myRobot, Encoder encRight, Encoder encLeft, double distanceInInches) {
 		this.myRobot = myRobot;
 		this.encRight = encRight;
+		this.encLeft = encLeft;
 		this.distance = distanceInInches;
 	}
 
-	RobotDrive myRobot;
+	DifferentialDrive  myRobot;
 	Encoder encRight;
+	Encoder encLeft;
 	boolean isFinished;
 	boolean isInitialized;
 	double distance;
@@ -19,23 +25,24 @@ public class ForwardDistance implements AutoCommand{
 
 	private void init() {
 		encRight.reset();
+		encLeft.reset();
 	}
 	
 	public void periodic() {
+		System.out.println("forwardjava periodic");
+		
 		if (!isInitialized){
 			init();
 			isInitialized = true;
 		}
-
-		if (0 > distance) {
-			myRobot.drive(-0.25,0);
-		}
-		else {
-			myRobot.drive(0.25,0);
-		}
+		double correctionFactorWeight = Preferences.getInstance().getDouble("Correction Factor Weight", 1);
+		double correctionFactor = (1-(encRight.getDistance()/encLeft.getDistance())) * correctionFactorWeight;
+		myRobot.arcadeDrive(0.55,correctionFactor);
+		System.out.println("forwardjava correctionFactor = " + correctionFactor);
 	}
 
 	public boolean isFinished() {
+		
 		if (!isInitialized){
 			return false;
 		}

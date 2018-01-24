@@ -3,10 +3,8 @@ package org.usfirst.frc.team3131.robot;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,14 +20,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 	private DifferentialDrive myRobot;
 	private Teleop teleop;
-	private Encoder encRight= new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-	private Encoder encLeft= new Encoder(2, 3, false, Encoder.EncodingType.k4X);
+	private Encoder encRight= new Encoder(2, 3, true, Encoder.EncodingType.k4X);
+	private Encoder encLeft= new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 	private AutoCommand[] commands;
 	private SendableChooser<Integer> autoChooser;
 	private Preferences prefs;
 	private SendableChooser<Integer> encoderChooser;
 	//PowerDistributionPanel pdp = new PowerDistributionPanel();
-//	Ultrasonic ultrasonic = new Ultrasonic(4,4);
 	
 	private double forwardTimeMS;
 	private double encoderDistanceInches;
@@ -43,7 +40,7 @@ public class Robot extends IterativeRobot {
 	
 	private AutoCommand[] getCommandsForAutoEncoder() {
 		return new AutoCommand[] {
-				//new ForwardDistance(myRobot, encRight, encoderDistanceInches)
+				new ForwardDistance(myRobot, encRight, encLeft, encoderDistanceInches)
 		};
 	}
 	
@@ -64,8 +61,8 @@ public class Robot extends IterativeRobot {
 	}
 	
 	private void sendEncoderDataToSmartDashboard() {
-		SmartDashboard.putNumber("Right Encoder distance", encLeft.getDistance()); //Left and Right swapped, names in code are wrong:
-		SmartDashboard.putNumber("Left Encoder distance", encRight.getDistance()); //swap all instances of encLeft and encRight eventually
+		SmartDashboard.putNumber("Left Encoder distance", encLeft.getDistance()); 
+		SmartDashboard.putNumber("Right Encoder distance", encRight.getDistance());
 		}
 
 	
@@ -74,9 +71,8 @@ public class Robot extends IterativeRobot {
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
-		CameraServer.getInstance().startAutomaticCapture();
-		// myRobot = new RobotDrive(1,2);
 		myRobot = new DifferentialDrive(new Talon(1), new Talon(2));
+		myRobot.setDeadband(0);
 		teleop = new Teleop(myRobot);
 		autoChooser = new SendableChooser<Integer>();
 		autoChooser.addDefault("Auto Forward", 0);
@@ -122,6 +118,7 @@ public class Robot extends IterativeRobot {
 		for(int i=0; i<commands.length; ++i) {
 			if (!commands[i].isFinished()) {
 				commands[i].periodic();
+				System.out.println("Running autonomous command " + i);
 				return;
 			}
 		}
@@ -136,7 +133,6 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		teleop.teleopPeriodic();
 		sendEncoderDataToSmartDashboard();
-//		SmartDashboard.putNumber("Ultrasonic(inches)", ultrasonic.getRangeInches());
 		//SmartDashboard.putNumber("Power Distribution Panel ?", pdp.getCurrent(0));
 	}
     
