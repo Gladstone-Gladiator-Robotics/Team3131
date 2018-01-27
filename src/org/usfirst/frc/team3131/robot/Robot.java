@@ -1,10 +1,13 @@
 package org.usfirst.frc.team3131.robot;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,6 +30,9 @@ public class Robot extends IterativeRobot {
 	private Preferences prefs;
 	private SendableChooser<Integer> encoderChooser;
 	//PowerDistributionPanel pdp = new PowerDistributionPanel();
+	private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
+	
+	
 	
 	private double forwardTimeMS;
 	private double encoderDistanceInches;
@@ -40,7 +46,7 @@ public class Robot extends IterativeRobot {
 	
 	private AutoCommand[] getCommandsForAutoEncoder() {
 		return new AutoCommand[] {
-				new ForwardDistance(myRobot, encRight, encLeft, encoderDistanceInches)
+			new ForwardDistance(myRobot, encRight, encLeft, encoderDistanceInches, gyro)
 		};
 	}
 	
@@ -61,11 +67,11 @@ public class Robot extends IterativeRobot {
 	}
 	
 	private void sendEncoderDataToSmartDashboard() {
-		SmartDashboard.putNumber("Left Encoder distance", encLeft.getDistance()); 
-		SmartDashboard.putNumber("Right Encoder distance", encRight.getDistance());
+		SmartDashboard.putNumber("Left Encoder Distance", encLeft.getDistance()); 
+		SmartDashboard.putNumber("Right Encoder Distance", encRight.getDistance());
+		SmartDashboard.putNumber("Gyroscope Angle", gyro.getAngle());
 		}
 
-	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -87,6 +93,7 @@ public class Robot extends IterativeRobot {
 		encRight.setDistancePerPulse(getDistancePerPulse());
 		encLeft.setDistancePerPulse(getDistancePerPulse());
 		
+		
 /*		if (encoderChooser.getSelected() == 0) {
 			// Use Encoder Objects
 		}
@@ -97,8 +104,9 @@ public class Robot extends IterativeRobot {
 
 	public void autonomousInit() { 
 		forwardTimeMS = prefs.getDouble("Forward Time in Milliseconds", 4000);
-		encoderDistanceInches = prefs.getDouble("Encoder Distance in Inches", 60);
+		encoderDistanceInches = prefs.getDouble("Encoder Distance in Inches", 100);
 		commands = getAutoCommands();
+		pausedTime = 0;
 	}
 
 	private AutoCommand[] getAutoCommands() {
@@ -113,7 +121,19 @@ public class Robot extends IterativeRobot {
  		}
 	}
 	
+	
+	int pausedTime = 0;
+	
+	
 	public void autonomousPeriodic(){
+		
+		if ( pausedTime < 100) {
+			pausedTime++;
+
+			myRobot.arcadeDrive(0,0);
+			return;
+		}
+		
 		sendEncoderDataToSmartDashboard();
 		for(int i=0; i<commands.length; ++i) {
 			if (!commands[i].isFinished()) {
