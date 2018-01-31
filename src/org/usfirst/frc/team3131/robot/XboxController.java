@@ -8,22 +8,22 @@ public class XboxController {
 	}
 	private Joystick stick;
 	public boolean aButton(){
-		return stick.getRawButton(1);
+		return stick.getRawButton(0);
 	}
 	public boolean bButton(){
-		return stick.getRawButton(2);
+		return stick.getRawButton(1);
 	}
 	public boolean xButton(){
-		return stick.getRawButton(3);
+		return stick.getRawButton(2);
 	}
 	public boolean yButton(){
-		return stick.getRawButton(4);
+		return stick.getRawButton(3);
 	}
 	public boolean rightBumper(){
-		return stick.getRawButton(5);
+		return stick.getRawButton(4);
 	}
 	public boolean leftBumper(){
-		return stick.getRawButton(6);
+		return stick.getRawButton(5);
 	}
 	public double leftJoystickX(){
 		return stick.getRawAxis(0);
