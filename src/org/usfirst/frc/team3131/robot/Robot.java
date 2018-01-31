@@ -92,6 +92,7 @@ public class Robot extends IterativeRobot {
 		prefs = Preferences.getInstance();
 		encRight.setDistancePerPulse(getDistancePerPulse());
 		encLeft.setDistancePerPulse(getDistancePerPulse());
+		gyro.calibrate();
 		
 		
 /*		if (encoderChooser.getSelected() == 0) {

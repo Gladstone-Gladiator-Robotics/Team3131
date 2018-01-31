@@ -1,9 +1,16 @@
 package org.usfirst.frc.team3131.robot;
 
-
+/* Controller Mapping
+ * A = 1, B = 2, X = 3, Y = 4
+ * LB = 5, RB = 6, Back = 7, Start = 8
+ * Left TS = 9, Right TS = 10
+ * Right Trigger = 3, Left Trigger = 2
+ * 
+ */
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.ArrayList;
@@ -15,12 +22,13 @@ public class Teleop {
 	}
 	
 	private DifferentialDrive myRobot;
-	private Joystick stick = new Joystick(0);
+	private XboxController controller = new XboxController(new Joystick(0));
 	private double highSpeed = 1;
 	private double lowSpeed = 0.7;
 	private boolean useHighSpeed = true;
 	AnalogInput infraRedRangefinder = new AnalogInput(0);
-	
+	private Talon grabMotor = new Talon (7);
+	private Talon stageTwoMotor = new Talon (4);
 	
 	private static double deadband (double joystick, int power) {
 		if (joystick < 0 && power % 2 == 0) {
@@ -34,14 +42,14 @@ public class Teleop {
 	private void speedDrive() {
 		int expo = 2;
 		if (useHighSpeed) {
-			myRobot.arcadeDrive(-highSpeed * deadband(stick.getRawAxis(1), expo), -highSpeed * deadband(stick.getRawAxis(4), expo));
-			if (stick.getRawButton(4)) {
+			myRobot.arcadeDrive(-highSpeed * deadband(controller.leftJoystickY(), expo), -highSpeed * deadband(controller.rightJoystickX(), expo));
+			if (controller.yButton()) {
 				useHighSpeed = false;
 			}
 		}
 		else {
-			myRobot.arcadeDrive(-lowSpeed * deadband(stick.getRawAxis(1), expo), -lowSpeed * deadband(stick.getRawAxis(4), expo));
-			if (stick.getRawButton(3)) {
+			myRobot.arcadeDrive(-lowSpeed * deadband(controller.leftJoystickY(), expo), -lowSpeed * deadband(controller.rightJoystickX(), expo));
+			if (controller.xButton()) {
 				useHighSpeed = true;
 			}
 		}
@@ -58,11 +66,34 @@ public class Teleop {
 		}
 	}
 	
+	private void grabMechanism() {
+		boolean aButton = controller.aButton();
+		boolean bButton = controller.bButton();
 		
+		if (aButton && bButton == true){
+			grabMotor.set(0);
+		}
+		else if (aButton == true) {
+			grabMotor.set(.75);
+		}
+		else if (bButton == true) {
+			grabMotor.set(-.75);
+		}
+		else {
+			grabMotor.set(0);
+		}
+	}
+	
+	private void liftMechanism() {
+		stageTwoMotor.set(controller.rightJoystickY());
+	}	
+	
+	
 	public void teleopPeriodic() {
 		speedDrive();
+		grabMechanism();
 		infraRedRangeFinder();
-		//ultraSonicAnalog();
+		liftMechanism();
 	}
 
 }

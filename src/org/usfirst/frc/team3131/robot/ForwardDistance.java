@@ -30,7 +30,6 @@ public class ForwardDistance implements AutoCommand{
 		encRight.reset();
 		encLeft.reset();
 		gyro.reset();
-		//gyro.calibrate();
 	}
 	
 	public void periodic() {
