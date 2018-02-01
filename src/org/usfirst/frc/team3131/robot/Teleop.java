@@ -67,16 +67,14 @@ public class Teleop {
 	}
 	
 	private void grabMechanism() {
-		boolean aButton = controller.aButton();
-		boolean bButton = controller.bButton();
 		
-		if (aButton && bButton == true){
+		if (controller.aButton() && controller.bButton() == true){
 			grabMotor.set(0);
 		}
-		else if (aButton == true) {
+		else if (controller.aButton() == true) {
 			grabMotor.set(.75);
 		}
-		else if (bButton == true) {
+		else if (controller.bButton() == true) {
 			grabMotor.set(-.75);
 		}
 		else {

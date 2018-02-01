@@ -2,6 +2,7 @@ package org.usfirst.frc.team3131.robot;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
@@ -31,7 +32,7 @@ public class Robot extends IterativeRobot {
 	private SendableChooser<Integer> encoderChooser;
 	//PowerDistributionPanel pdp = new PowerDistributionPanel();
 	private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
-	
+	String gameData;
 	
 	
 	private double forwardTimeMS;
@@ -71,6 +72,11 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Right Encoder Distance", encRight.getDistance());
 		SmartDashboard.putNumber("Gyroscope Angle", gyro.getAngle());
 		}
+	
+	private void fmsTest(){
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		SmartDashboard.putBoolean("Left Switch is ours", gameData.charAt(0) == 'L');		
+	}
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -93,6 +99,7 @@ public class Robot extends IterativeRobot {
 		encRight.setDistancePerPulse(getDistancePerPulse());
 		encLeft.setDistancePerPulse(getDistancePerPulse());
 		gyro.calibrate();
+		
 		
 		
 /*		if (encoderChooser.getSelected() == 0) {
@@ -154,6 +161,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		teleop.teleopPeriodic();
 		sendEncoderDataToSmartDashboard();
+		fmsTest();
 		//SmartDashboard.putNumber("Power Distribution Panel ?", pdp.getCurrent(0));
 	}
     
