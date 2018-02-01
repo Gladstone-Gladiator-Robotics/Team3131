@@ -73,7 +73,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Gyroscope Angle", gyro.getAngle());
 		}
 	
-	private void fmsTest(){
+/*	private void fmsTest(){
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		SmartDashboard.putBoolean("Left Switch is ours", gameData.charAt(0) == 'L');		
 	}
@@ -161,7 +161,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		teleop.teleopPeriodic();
 		sendEncoderDataToSmartDashboard();
-		fmsTest();
+		//fmsTest();
 		//SmartDashboard.putNumber("Power Distribution Panel ?", pdp.getCurrent(0));
 	}
     

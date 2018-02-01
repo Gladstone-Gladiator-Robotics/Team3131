@@ -67,16 +67,19 @@ public class Teleop {
 	}
 	
 	private void grabMechanism() {
-		
+		//int rangeFinderValue = infraRedRangefinder.getValue();
 		if (controller.aButton() && controller.bButton() == true){
 			grabMotor.set(0);
 		}
 		else if (controller.aButton() == true) {
-			grabMotor.set(.75);
+			grabMotor.set(.3);
 		}
 		else if (controller.bButton() == true) {
-			grabMotor.set(-.75);
+			grabMotor.set(-.3);
 		}
+		/*else if ((4800/(rangeFinderValue - 20) >= 3)){
+			//grabMotor.set(0);
+		}*/
 		else {
 			grabMotor.set(0);
 		}
