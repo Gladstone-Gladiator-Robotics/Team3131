@@ -25,7 +25,6 @@ public class Robot extends IterativeRobot {
 	private DifferentialDrive myRobot;
 	private Teleop teleop;
 	private Encoder encRight= new Encoder(2, 3, true, Encoder.EncodingType.k4X);
-	private Encoder encLeft= new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 	private AutoCommand[] commands;
 	private SendableChooser<Integer> autoChooser;
 	private Preferences prefs;
@@ -33,6 +32,8 @@ public class Robot extends IterativeRobot {
 	//PowerDistributionPanel pdp = new PowerDistributionPanel();
 	private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 	String gameData;
+	private SendableChooser<Integer> motorSelect;
+	//private MotorCommand[] mCommands;
 	
 	
 	private double forwardTimeMS;
@@ -47,7 +48,7 @@ public class Robot extends IterativeRobot {
 	
 	private AutoCommand[] getCommandsForAutoEncoder() {
 		return new AutoCommand[] {
-			new ForwardDistance(myRobot, encRight, encLeft, encoderDistanceInches, gyro)
+			new ForwardDistance(myRobot, encRight, encoderDistanceInches, gyro)
 		};
 	}
 	
@@ -67,8 +68,7 @@ public class Robot extends IterativeRobot {
 		return gearRatio * circumference / pulsePerMotorRev;
 	}
 	
-	private void sendEncoderDataToSmartDashboard() {
-		SmartDashboard.putNumber("Left Encoder Distance", encLeft.getDistance()); 
+	private void sendEncoderDataToSmartDashboard() { 
 		SmartDashboard.putNumber("Right Encoder Distance", encRight.getDistance());
 		SmartDashboard.putNumber("Gyroscope Angle", gyro.getAngle());
 		}
@@ -97,9 +97,11 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Encoder Chooser", encoderChooser);
 		prefs = Preferences.getInstance();
 		encRight.setDistancePerPulse(getDistancePerPulse());
-		encLeft.setDistancePerPulse(getDistancePerPulse());
 		gyro.calibrate();
-		
+		CameraServer.getInstance().startAutomaticCapture();
+		/*motorSelect = new SendableChooser<Integer>();
+		motorSelect.addDefault("Default", 0);
+		motorSelect.addObject("Reverse Direction", 1);
 		
 		
 /*		if (encoderChooser.getSelected() == 0) {
@@ -129,6 +131,13 @@ public class Robot extends IterativeRobot {
  		}
 	}
 	
+	/*private MotorCommand[] getMotorCommands() {
+		switch (motorSelect.getSelected()) {
+		case 0:
+			return 
+		}
+	}*/
+	
 	
 	int pausedTime = 0;
 	
@@ -155,7 +164,6 @@ public class Robot extends IterativeRobot {
 
 	public void teleopInit(){
 		encRight.reset();
-		encLeft.reset();
 	    } 
 	
 	public void teleopPeriodic() {

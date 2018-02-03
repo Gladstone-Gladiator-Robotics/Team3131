@@ -8,17 +8,15 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class ForwardDistance implements AutoCommand{
-	ForwardDistance(DifferentialDrive myRobot, Encoder encRight, Encoder encLeft, double distanceInInches, ADXRS450_Gyro gyro) {
+	ForwardDistance(DifferentialDrive myRobot, Encoder encRight, double distanceInInches, ADXRS450_Gyro gyro) {
 		this.myRobot = myRobot;
 		this.encRight = encRight;
-		this.encLeft = encLeft;
 		this.distance = distanceInInches;
 		this.gyro = gyro;
 	}
 
 	DifferentialDrive  myRobot;
 	Encoder encRight;
-	Encoder encLeft;
 	ADXRS450_Gyro gyro;
 	boolean isFinished;
 	boolean isInitialized;
@@ -28,7 +26,6 @@ public class ForwardDistance implements AutoCommand{
 
 	private void init() {
 		encRight.reset();
-		encLeft.reset();
 		gyro.reset();
 	}
 	

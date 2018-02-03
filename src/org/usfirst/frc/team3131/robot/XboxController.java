@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3131.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class XboxController {
 	public XboxController(Joystick stick){
@@ -42,5 +43,15 @@ public class XboxController {
 	}
 	public double rightJoystickY(){
 		return stick.getRawAxis(5);
+	}
+	public void rumble(){
+		int intensity = 1;
+		stick.setRumble(RumbleType.kLeftRumble, intensity);
+		stick.setRumble(RumbleType.kRightRumble, intensity);
+	}
+	public void stopRumble() {
+		int intensity = 0;
+		stick.setRumble(RumbleType.kLeftRumble, intensity);
+		stick.setRumble(RumbleType.kRightRumble, intensity);
 	}
 }

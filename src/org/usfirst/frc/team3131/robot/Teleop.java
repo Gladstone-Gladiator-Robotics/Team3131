@@ -28,6 +28,7 @@ public class Teleop {
 	private boolean useHighSpeed = true;
 	AnalogInput infraRedRangefinder = new AnalogInput(0);
 	private Talon grabMotor = new Talon (7);
+	private Talon stageOneMotor = new Talon (5);
 	private Talon stageTwoMotor = new Talon (4);
 	
 	private static double deadband (double joystick, int power) {
@@ -41,18 +42,23 @@ public class Teleop {
 
 	private void speedDrive() {
 		int expo = 2;
+		double speedMultiplier;
 		if (useHighSpeed) {
-			myRobot.arcadeDrive(-highSpeed * deadband(controller.leftJoystickY(), expo), -highSpeed * deadband(controller.rightJoystickX(), expo));
+			speedMultiplier = highSpeed;
 			if (controller.yButton()) {
 				useHighSpeed = false;
 			}
 		}
 		else {
-			myRobot.arcadeDrive(-lowSpeed * deadband(controller.leftJoystickY(), expo), -lowSpeed * deadband(controller.rightJoystickX(), expo));
+			speedMultiplier = lowSpeed;
 			if (controller.xButton()) {
 				useHighSpeed = true;
 			}
 		}
+		myRobot.arcadeDrive(
+				-speedMultiplier * deadband(controller.leftJoystickY(), expo), 
+				-speedMultiplier * deadband(controller.rightJoystickX(), expo));
+
 	}
 	
 	private void infraRedRangeFinder() {
@@ -68,14 +74,14 @@ public class Teleop {
 	
 	private void grabMechanism() {
 		//int rangeFinderValue = infraRedRangefinder.getValue();
-		if (controller.aButton() && controller.bButton() == true){
+		if (controller.aButton() && controller.bButton()){
 			grabMotor.set(0);
 		}
-		else if (controller.aButton() == true) {
-			grabMotor.set(.3);
+		else if (controller.aButton()) {
+			grabMotor.set(.4);
 		}
-		else if (controller.bButton() == true) {
-			grabMotor.set(-.3);
+		else if (controller.bButton()) {
+			grabMotor.set(-.4);
 		}
 		/*else if ((4800/(rangeFinderValue - 20) >= 3)){
 			//grabMotor.set(0);
@@ -86,7 +92,15 @@ public class Teleop {
 	}
 	
 	private void liftMechanism() {
+		if (controller.rightTrigger() > 0 && controller.leftTrigger() > 0){
+			controller.rumble();
+		}
+		else {
+			controller.stopRumble();
+		}
+		stageOneMotor.set(controller.rightTrigger() - controller.leftTrigger());
 		stageTwoMotor.set(controller.rightJoystickY());
+		
 	}	
 	
 	
