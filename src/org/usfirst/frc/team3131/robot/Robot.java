@@ -32,8 +32,8 @@ public class Robot extends IterativeRobot {
 	//PowerDistributionPanel pdp = new PowerDistributionPanel();
 	private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 	String gameData;
-	private SendableChooser<Integer> motorSelect;
-	//private MotorCommand[] mCommands;
+	private Talon leftDriveTalon = new Talon(1);
+	private Talon rightDriveTalon = new Talon(2);
 	
 	
 	private double forwardTimeMS;
@@ -83,7 +83,7 @@ public class Robot extends IterativeRobot {
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
-		myRobot = new DifferentialDrive(new Talon(1), new Talon(2));
+		myRobot = new DifferentialDrive(leftDriveTalon, rightDriveTalon);
 		myRobot.setDeadband(0);
 		teleop = new Teleop(myRobot);
 		autoChooser = new SendableChooser<Integer>();
@@ -99,10 +99,6 @@ public class Robot extends IterativeRobot {
 		encRight.setDistancePerPulse(getDistancePerPulse());
 		gyro.calibrate();
 		CameraServer.getInstance().startAutomaticCapture();
-		/*motorSelect = new SendableChooser<Integer>();
-		motorSelect.addDefault("Default", 0);
-		motorSelect.addObject("Reverse Direction", 1);
-		
 		
 /*		if (encoderChooser.getSelected() == 0) {
 			// Use Encoder Objects
@@ -130,13 +126,6 @@ public class Robot extends IterativeRobot {
 			return getCommandsForAutoStop();
  		}
 	}
-	
-	/*private MotorCommand[] getMotorCommands() {
-		switch (motorSelect.getSelected()) {
-		case 0:
-			return 
-		}
-	}*/
 	
 	
 	int pausedTime = 0;
@@ -169,6 +158,10 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		teleop.teleopPeriodic();
 		sendEncoderDataToSmartDashboard();
+		leftDriveTalon.setInverted(prefs.getBoolean("Left Motor Inverted", false));
+		rightDriveTalon.setInverted(prefs.getBoolean("Right Motor Inverted", false));
+		prefs.putBoolean("Right Motor Inverted 2", false);
+		
 		//fmsTest();
 		//SmartDashboard.putNumber("Power Distribution Panel ?", pdp.getCurrent(0));
 	}

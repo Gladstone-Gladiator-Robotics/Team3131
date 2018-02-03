@@ -28,8 +28,8 @@ public class Teleop {
 	private boolean useHighSpeed = true;
 	AnalogInput infraRedRangefinder = new AnalogInput(0);
 	private Talon grabMotor = new Talon (7);
-	private Talon stageOneMotor = new Talon (5);
-	private Talon stageTwoMotor = new Talon (4);
+	private LiftMechanism lift = new LiftMechanism(controller, new Talon (5), new Talon (4));
+	
 	
 	private static double deadband (double joystick, int power) {
 		if (joystick < 0 && power % 2 == 0) {
@@ -91,24 +91,12 @@ public class Teleop {
 		}
 	}
 	
-	private void liftMechanism() {
-		if (controller.rightTrigger() > 0 && controller.leftTrigger() > 0){
-			controller.rumble();
-		}
-		else {
-			controller.stopRumble();
-		}
-		stageOneMotor.set(controller.rightTrigger() - controller.leftTrigger());
-		stageTwoMotor.set(controller.rightJoystickY());
-		
-	}	
-	
 	
 	public void teleopPeriodic() {
 		speedDrive();
 		grabMechanism();
 		infraRedRangeFinder();
-		liftMechanism();
+		lift.liftMechanism();
 	}
 
 }
