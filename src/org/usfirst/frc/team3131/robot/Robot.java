@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 	private DifferentialDrive myRobot;
 	private Teleop teleop;
-	private Encoder encRight = new Encoder(2, 3, true, Encoder.EncodingType.k4X);
+	private Encoder encRight = new Encoder(0, 1, true, Encoder.EncodingType.k4X);
 	private AutoCommand[] commands;
 	private SendableChooser<Integer> autoChooser;
 	private Preferences prefs;
@@ -37,13 +37,14 @@ public class Robot extends IterativeRobot {
 
 	private double forwardTimeMS;
 	private double encoderDistanceInches;
+	private double kpValue;
 
 	private AutoCommand[] getCommandsForAutoForward() {
 		return new AutoCommand[] { new Forward(myRobot, (int) forwardTimeMS), };
 	}
 
 	private AutoCommand[] getCommandsForAutoEncoder() {
-		return new AutoCommand[] { new ForwardDistance(myRobot, encRight, encoderDistanceInches, gyro) };
+		return new AutoCommand[] { new ForwardDistance(myRobot, encRight, encoderDistanceInches, gyro, kpValue) };
 	}
 
 	private AutoCommand[] getCommandsForAutoStop() {
@@ -103,9 +104,9 @@ public class Robot extends IterativeRobot {
 
 	public void autonomousInit() {
 		forwardTimeMS = prefs.getDouble("Forward Time in Milliseconds", 4000);
-		encoderDistanceInches = prefs.getDouble("Encoder Distance in Inches", 100);
+		encoderDistanceInches = prefs.getDouble("Encoder Distance in Inches", 96);
 		commands = getAutoCommands();
-		pausedTime = 0;
+		kpValue = prefs.getDouble("Kp Value Set", .05); // this won't work - come back to this later
 	}
 
 	private AutoCommand[] getAutoCommands() {
@@ -120,17 +121,9 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	int pausedTime = 0;
 
 	public void autonomousPeriodic() {
-
-		if (pausedTime < 100) {
-			pausedTime++;
-
-			myRobot.arcadeDrive(0, 0);
-			return;
-		}
-
+		setMotorDirections();
 		sendEncoderDataToSmartDashboard();
 		for (int i = 0; i < commands.length; ++i) {
 			if (!commands[i].isFinished()) {
@@ -146,11 +139,14 @@ public class Robot extends IterativeRobot {
 		encRight.reset();
 	}
 
+	private void setMotorDirections() {
+		leftDriveTalon.setInverted(prefs.getBoolean("Left Motor Inverted", true));
+		rightDriveTalon.setInverted(prefs.getBoolean("Right Motor Inverted", true));
+	}
 	public void teleopPeriodic() {
 		teleop.teleopPeriodic();
 		sendEncoderDataToSmartDashboard();
-		leftDriveTalon.setInverted(prefs.getBoolean("Left Motor Inverted", false));
-		rightDriveTalon.setInverted(prefs.getBoolean("Right Motor Inverted", false));
+		setMotorDirections();
 		prefs.putBoolean("Right Motor Inverted 2", false);
 
 		// fmsTest();

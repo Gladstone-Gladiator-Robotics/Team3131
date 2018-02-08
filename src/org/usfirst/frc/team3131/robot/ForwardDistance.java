@@ -8,11 +8,12 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class ForwardDistance implements AutoCommand{
-	ForwardDistance(DifferentialDrive myRobot, Encoder encRight, double distanceInInches, ADXRS450_Gyro gyro) {
+	ForwardDistance(DifferentialDrive myRobot, Encoder encRight, double distanceInInches, ADXRS450_Gyro gyro, double Kp ) {
 		this.myRobot = myRobot;
 		this.encRight = encRight;
 		this.distance = distanceInInches;
 		this.gyro = gyro;
+		this.Kp = Kp;
 	}
 
 	DifferentialDrive  myRobot;
@@ -22,7 +23,8 @@ public class ForwardDistance implements AutoCommand{
 	boolean isInitialized;
 	double distance;
 	double curveCorrect;
-	double Kp = 0.25;
+	double Kp;
+	
 
 	private void init() {
 		encRight.reset();
@@ -30,14 +32,20 @@ public class ForwardDistance implements AutoCommand{
 	}
 	
 	public void periodic() {
-		System.out.println("forwardjava periodic");
 		if (!isInitialized){
 			init();
 		isInitialized = true;
 		}
-		double angle = gyro.getAngle();
-		myRobot.arcadeDrive(.75, -angle*Kp);
-		
+		double angle = gyro.getAngle() * Kp;
+		System.out.println("forwardjava raw angle = " + angle);
+		if (angle >= .2){
+			angle = .2;
+		}
+		else if (angle <= -.2){
+			angle = -.2;
+		}
+		myRobot.arcadeDrive(.65, -angle);
+		System.out.println("forwardjava angle = " + angle);
 		/*double correctionFactorWeight = Preferences.getInstance().getDouble("Correction Factor Weight", 1);
 		double correctionFactor = (1-(encRight.getDistance()/encLeft.getDistance())) * correctionFactorWeight;
 		myRobot.arcadeDrive(0.55,correctionFactor);

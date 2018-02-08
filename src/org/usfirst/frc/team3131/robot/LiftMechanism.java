@@ -2,6 +2,7 @@ package org.usfirst.frc.team3131.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LiftMechanism {
 
@@ -14,13 +15,13 @@ public class LiftMechanism {
 	private XboxController controller;
 	private Talon stageOneMotor;
 	private Talon stageTwoMotor;
-	/*
-	private DigitalInput stageOneTopLimitSwitch = new DigitalInput(2);
-	private DigitalInput stageOneBottomLimitSwitch = new DigitalInput(4);
+	
+	//private DigitalInput stageOneTopLimitSwitch = new DigitalInput(2);
+	//private DigitalInput stageOneBottomLimitSwitch = new DigitalInput(4);
 	private DigitalInput stageTwoTopLimitSwitch = new DigitalInput(5);
 	private DigitalInput stageTwoBottomLimitSwitch = new DigitalInput(6);
 	
-	private void stageOne(){
+/*	private void stageOne(){
 		
 		if (controller.rightTrigger() > 0 && controller.leftTrigger() > 0){
 			controller.rumble();
@@ -46,22 +47,32 @@ public class LiftMechanism {
 		
 		stageOneMotor.set(up - down);
 		
-	}
+	}*/
 	private void stageTwo(){
+		boolean isAtTopLimit = !stageTwoTopLimitSwitch.get();
+		boolean isAtBottomLimit = stageTwoBottomLimitSwitch.get();
+		double multiplier = -.4;
 		
-		if (controller.rightJoystickY() > 0 && stageTwoTopLimitSwitch.get()){
-			stageTwoMotor.set(0);
+		if (isAtBottomLimit) {
+			if (controller.rightJoystickY() > 0){
+				stageTwoMotor.set(0);
+				return;
+			}
 		}
-		else if (controller.rightJoystickY() < 0 && stageTwoBottomLimitSwitch.get()){
-			stageTwoMotor.set(0);
+		
+		if (isAtTopLimit){
+			System.out.println("isAtBottomLimit");
+			if (controller.rightJoystickY() < 0){
+				stageTwoMotor.set(0);
+				return;
+			}
 		}
-		else {
-			stageTwoMotor.set(controller.rightJoystickY());		
-		}
+
+		stageTwoMotor.set(controller.rightJoystickY() * multiplier);		
 	}
-	*/
+	
 	public void liftMechanism() {
 		//stageOne();
-		//stageTwo();
+		stageTwo();
 	}	
 }
