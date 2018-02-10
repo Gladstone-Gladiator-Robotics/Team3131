@@ -8,71 +8,68 @@ public class LiftMechanism {
 
 	public LiftMechanism(XboxController controller, Talon stageOneMotor, Talon stageTwoMotor){
 		this.controller = controller;
-		this.stageOneMotor = stageOneMotor;
-		this.stageTwoMotor = stageTwoMotor;
+		this.smallMotor = stageOneMotor;
+		this.bigMotor = stageTwoMotor;
 	}
 
 	private XboxController controller;
-	private Talon stageOneMotor;
-	private Talon stageTwoMotor;
+	private Talon smallMotor;
+	private Talon bigMotor;
 	
-	//private DigitalInput stageOneTopLimitSwitch = new DigitalInput(2);
-	//private DigitalInput stageOneBottomLimitSwitch = new DigitalInput(4);
-	private DigitalInput stageTwoTopLimitSwitch = new DigitalInput(5);
-	private DigitalInput stageTwoBottomLimitSwitch = new DigitalInput(6);
+	private DigitalInput bigMotorTopLimitSwitch = new DigitalInput(5);
+	private DigitalInput bigMotorBottomLimitSwitch = new DigitalInput(6);
 	
-/*	private void stageOne(){
+	private void smallMotor(){
+		double smallMotorSpeed = 1;
 		
-		if (controller.rightTrigger() > 0 && controller.leftTrigger() > 0){
-			controller.rumble();
+		if (controller.rightBumper()){
+			smallMotor.set(smallMotorSpeed);
+		}
+		else if (controller.leftBumper()){
+			smallMotor.set(-smallMotorSpeed);
 		}
 		else {
-			controller.stopRumble();
+			smallMotor.set(0);
 		}
-		
-		double up;
-		double down;
-		if  (stageOneTopLimitSwitch.get()){
-			up = 0;
-		}
-		else {
-			up = controller.rightTrigger();
-		}
-		if  (stageOneBottomLimitSwitch.get()){
-			down = 0;
-		}
-		else {
-			down = controller.leftTrigger();
-		}
-		
-		stageOneMotor.set(up - down);
-		
-	}*/
-	private void stageTwo(){
-		boolean isAtTopLimit = !stageTwoTopLimitSwitch.get();
-		boolean isAtBottomLimit = stageTwoBottomLimitSwitch.get();
+	}
+	
+	private void bigMotor(){
+		boolean isAtTopLimit = !bigMotorTopLimitSwitch.get();
+		boolean isAtBottomLimit = bigMotorBottomLimitSwitch.get();
 		double multiplier = -.4;
+		double bigMotorSpeed = controller.rightTrigger() - controller.leftTrigger();
 		
 		if (isAtBottomLimit) {
-			if (controller.rightJoystickY() > 0){
-				stageTwoMotor.set(0);
+			
+			if (bigMotorSpeed > 0){
+				bigMotor.set(0);
 				return;
 			}
 		}
 		
 		if (isAtTopLimit){
-			System.out.println("isAtBottomLimit");
-			if (controller.rightJoystickY() < 0){
-				stageTwoMotor.set(0);
+			if (bigMotorSpeed < 0){
+				bigMotor.set(0);
 				return;
 			}
 		}
-
-		stageTwoMotor.set(controller.rightJoystickY() * multiplier);		
+		
+		bigMotor.set(bigMotorSpeed * multiplier);		
+	}
+	
+	private void rumble(){
+		if ((controller.rightTrigger() > 0 && controller.leftTrigger() > 0) || (controller.rightBumper() && controller.leftBumper())){
+			controller.rumble();
+		}
+		else {
+			controller.stopRumble();
+		}
 	}
 	
 	public void liftMechanism() {
-		//stageOne();
-		stageTwo();
+		rumble();
+		smallMotor();
+		bigMotor();
+		
 	}	
 }

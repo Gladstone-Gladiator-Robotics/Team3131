@@ -2,15 +2,11 @@ package org.usfirst.frc.team3131.robot;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -24,134 +20,56 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 	private DifferentialDrive myRobot;
 	private Teleop teleop;
-	private Encoder encRight = new Encoder(0, 1, true, Encoder.EncodingType.k4X);
-	private AutoCommand[] commands;
-	private SendableChooser<Integer> autoChooser;
-	private Preferences prefs;
-	private SendableChooser<Integer> encoderChooser;
+	private Encoder encDrive = new Encoder(0, 1, true, Encoder.EncodingType.k4X);
+	private Preferences prefs = Preferences.getInstance();
 	// PowerDistributionPanel pdp = new PowerDistributionPanel();
-	private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 	String gameData;
 	private Talon leftDriveTalon = new Talon(1);
 	private Talon rightDriveTalon = new Talon(2);
+	private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
+	private Autonomous autonomous = new Autonomous(myRobot, encDrive, prefs, gyro);
 
-	private double forwardTimeMS;
-	private double encoderDistanceInches;
-	private double kpValue;
 
-	private AutoCommand[] getCommandsForAutoForward() {
-		return new AutoCommand[] { new Forward(myRobot, (int) forwardTimeMS), };
-	}
-
-	private AutoCommand[] getCommandsForAutoEncoder() {
-		return new AutoCommand[] { new ForwardDistance(myRobot, encRight, encoderDistanceInches, gyro, kpValue) };
-	}
-
-	private AutoCommand[] getCommandsForAutoStop() {
-		return new AutoCommand[] {};
-	}
-
-	private double getDistancePerPulse() {
-		double gear1 = 14;
-		double gear2 = 50;
-		double gear3 = 16;
-		double gear4 = 48;
-		double gearRatio = (gear1 / gear2) * (gear3 / gear4);
-		int pulsePerMotorRev = 20;
-		double radiusInInches = 3;
-		double circumference = 2 * Math.PI * radiusInInches;
-		return gearRatio * circumference / pulsePerMotorRev;
-	}
-
-	private void sendEncoderDataToSmartDashboard() {
-		SmartDashboard.putNumber("Right Encoder Distance", encRight.getDistance());
+	private void sendDataToSmartDashboard() {
+		SmartDashboard.putNumber("Right Encoder Distance", encDrive.getDistance());
 		SmartDashboard.putNumber("Gyroscope Angle", gyro.getAngle());
 	}
-
-	/*
-	 * private void fmsTest(){ gameData =
-	 * DriverStation.getInstance().getGameSpecificMessage();
-	 * SmartDashboard.putBoolean("Left Switch is ours", gameData.charAt(0) ==
-	 * 'L'); }
-	 * 
-	 * /** This function is run when the robot is first started up and should be
-	 * used for any initialization code.
-	 */
+	
+	 /* This function is run when the robot is first started up and should be
+	  * used for any initialization code.
+	  */
 	public void robotInit() {
 		myRobot = new DifferentialDrive(leftDriveTalon, rightDriveTalon);
 		myRobot.setDeadband(0);
 		teleop = new Teleop(myRobot);
-		autoChooser = new SendableChooser<Integer>();
-		autoChooser.addDefault("Auto Forward", 0);
-		autoChooser.addObject("Auto Encoder", 1);
-		autoChooser.addObject("Auto Stop", 2);
-		SmartDashboard.putData("Autonomous Chooser", autoChooser);
-		encoderChooser = new SendableChooser<Integer>();
-		encoderChooser.addDefault("Competition", 0);
-		encoderChooser.addObject("Test", 1);
-		SmartDashboard.putData("Encoder Chooser", encoderChooser);
-		prefs = Preferences.getInstance();
-		encRight.setDistancePerPulse(getDistancePerPulse());
 		gyro.calibrate();
 		CameraServer.getInstance().startAutomaticCapture();
-
-		/*
-		 * if (encoderChooser.getSelected() == 0) { // Use Encoder Objects }
-		 * else if (encoderChooser.getSelected() == 1) { // Use DIO Objects for
-		 * testing purposes }
-		 */
 	}
 
+	public void robotPeriodic() {
+		setMotorDirections();
+		sendDataToSmartDashboard();
+	}
+	
 	public void autonomousInit() {
-		forwardTimeMS = prefs.getDouble("Forward Time in Milliseconds", 4000);
-		encoderDistanceInches = prefs.getDouble("Encoder Distance in Inches", 96);
-		commands = getAutoCommands();
-		kpValue = prefs.getDouble("Kp Value Set", .05); // this won't work - come back to this later
+		autonomous.autonomousInit();
 	}
-
-	private AutoCommand[] getAutoCommands() {
-		switch (autoChooser.getSelected()) {
-		case 0:
-			return getCommandsForAutoForward();
-		case 1:
-			return getCommandsForAutoEncoder();
-		case 2:
-		default:
-			return getCommandsForAutoStop();
-		}
-	}
-
 
 	public void autonomousPeriodic() {
-		setMotorDirections();
-		sendEncoderDataToSmartDashboard();
-		for (int i = 0; i < commands.length; ++i) {
-			if (!commands[i].isFinished()) {
-				commands[i].periodic();
-				System.out.println("Running autonomous command " + i);
-				return;
-			}
-		}
-		myRobot.arcadeDrive(0, 0);
+		autonomous.autonomousPeriodic();
 	}
 
 	public void teleopInit() {
-		encRight.reset();
+		encDrive.reset();
 	}
 
 	private void setMotorDirections() {
 		leftDriveTalon.setInverted(prefs.getBoolean("Left Motor Inverted", true));
 		rightDriveTalon.setInverted(prefs.getBoolean("Right Motor Inverted", true));
 	}
+	
 	public void teleopPeriodic() {
 		teleop.teleopPeriodic();
-		sendEncoderDataToSmartDashboard();
-		setMotorDirections();
-		prefs.putBoolean("Right Motor Inverted 2", false);
-
-		// fmsTest();
-		// SmartDashboard.putNumber("Power Distribution Panel ?",
-		// pdp.getCurrent(0));
 	}
 
 	public void testPeriodic() {
