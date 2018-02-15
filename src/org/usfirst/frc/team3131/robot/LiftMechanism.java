@@ -15,9 +15,11 @@ public class LiftMechanism {
 	private XboxController controller;
 	private Talon smallMotor;
 	private Talon bigMotor;
-	
 	private DigitalInput bigMotorTopLimitSwitch = new DigitalInput(5);
 	private DigitalInput bigMotorBottomLimitSwitch = new DigitalInput(6);
+//	private boolean backButtonPressed;
+//	private boolean startButtonPressed; 
+	
 	
 	private void smallMotor(){
 		double smallMotorSpeed = 1;
@@ -33,28 +35,36 @@ public class LiftMechanism {
 		}
 	}
 	
+	/*private enum BigMotorSpeed {
+		manualBigMotorSpeed, autoUp, autoDown
+	}*/
+	
 	private void bigMotor(){
 		boolean isAtTopLimit = !bigMotorTopLimitSwitch.get();
 		boolean isAtBottomLimit = bigMotorBottomLimitSwitch.get();
-		double multiplier = -.4;
-		double bigMotorSpeed = controller.rightTrigger() - controller.leftTrigger();
+		double multiplier = 1;
+		double manualBigMotorSpeed = (controller.rightTrigger() * .4) - controller.leftTrigger();
+		//double autoUp = .7;
+		//double autoDown = -.7;
+		
+		
 		
 		if (isAtBottomLimit) {
-			
-			if (bigMotorSpeed > 0){
+		//	startButtonPressed = false;
+			if (manualBigMotorSpeed > 0){
 				bigMotor.set(0);
 				return;
 			}
 		}
 		
 		if (isAtTopLimit){
-			if (bigMotorSpeed < 0){
+		//	backButtonPressed = false;
+			if (manualBigMotorSpeed < 0){
 				bigMotor.set(0);
 				return;
 			}
 		}
-		
-		bigMotor.set(bigMotorSpeed * multiplier);		
+		bigMotor.set(manualBigMotorSpeed * multiplier);
 	}
 	
 	private void rumble(){

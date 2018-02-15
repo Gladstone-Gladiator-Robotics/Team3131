@@ -6,6 +6,7 @@ package org.usfirst.frc.team3131.robot;
  * Left TS = 9, Right TS = 10
  * Right Trigger = 3, Left Trigger = 2
  * 
+ * This is useless now thanks to our XboxController class, just use controller.[button/axis here]()
  */
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -78,10 +79,10 @@ public class Teleop {
 			grabMotor.set(0);
 		}
 		else if (controller.aButton()) {
-			grabMotor.set(.4);
+			grabMotor.set(.7);
 		}
 		else if (controller.bButton()) {
-			grabMotor.set(-.4);
+			grabMotor.set(-.3);
 		}
 		/*else if ((4800/(rangeFinderValue - 20) >= 3)){
 			//grabMotor.set(0);

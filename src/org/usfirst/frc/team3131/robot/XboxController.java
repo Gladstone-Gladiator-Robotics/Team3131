@@ -26,6 +26,12 @@ public class XboxController {
 	public boolean leftBumper(){
 		return stick.getRawButton(6);
 	}
+	public boolean backButton(){
+		return stick.getRawButton(7);
+	}
+	public boolean startButton(){	//NOT the big center button, I'm watching you..
+		return stick.getRawButton(8);
+	}
 	public double leftJoystickX(){
 		return stick.getRawAxis(0);
 	}
