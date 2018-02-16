@@ -14,9 +14,9 @@ public class Autonomous {
 		this.prefs = prefs;
 		this.gyro = gyro;
 		autoChooser = new SendableChooser<Integer>();
-		autoChooser.addDefault("Auto Forward", 0);
-		autoChooser.addObject("Auto Encoder", 1);
-		autoChooser.addObject("Auto Stop", 2);
+		autoChooser.addDefault("Only Forward", 0);
+		autoChooser.addObject("Gyro Forward (BUSTED)", 1);
+		autoChooser.addObject("Do nothing", 2);
 		SmartDashboard.putData("Autonomous Chooser", autoChooser);
 	}
 	

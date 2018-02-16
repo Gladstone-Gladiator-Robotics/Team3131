@@ -20,7 +20,7 @@ public class LiftMechanism {
 	private DigitalInput bigMotorBottomLimitSwitch = new DigitalInput(6);
 	public boolean backButtonPressed;
 	public boolean startButtonPressed;
-	public double downMultiplier = .5;
+	public double downMultiplier = .5; //To swap between Drive and Climb mode for the big motor, where it is set to .5(half speed) is drive mode and 1(full speed) is climb mode
 	
 	private void smallMotor(){
 		double smallMotorSpeed = 1;
@@ -36,25 +36,13 @@ public class LiftMechanism {
 		}
 	}
 	
-	/*private enum BigMotorSpeed{
-		manualBigMotorSpeed, autoUp, autoDown;
-	}*/
-	
 	private void bigMotor(){
 		boolean isAtTopLimit = !bigMotorTopLimitSwitch.get();
 		boolean isAtBottomLimit = bigMotorBottomLimitSwitch.get();
-		double multiplier = 1;
 		double manualUpDown = ((controller.rightTrigger() * .5) - (controller.leftTrigger() * downMultiplier));
 		double autoUp = .7;
 		double autoDown = -.7;
 		double bigMotorDrive;
-		
-		/*switch (bigMotorSpeed){
-		case manualBigMotorSpeed: bigMotorDrive = manualBigMotorSpeed;
-		case autoUp: bigMotorDrive = autoUp;
-		case autoDown: bigMotorDrive = autoDown;
-		default: bigMotorDrive = manualBigMotorSpeed;
-		}*/
 		
 		if (backButtonPressed){
 			bigMotorDrive = autoUp;
@@ -68,13 +56,13 @@ public class LiftMechanism {
 			startButtonPressed = controller.startButton();
 		}
 		
-/*		if (controller.xButton()){		FIND DIFFERENT BUTTONS TO ALLOCATE THIS TO
-			downMultiplier = 1; //Press X to enable climb mode, this will also enable slow speed for main drive
+		if (controller.dPadUp()){
+			downMultiplier = 1; //Press UP on Dpad to enable climb mode, this will allow the big motor to move FULL SPEED only when going down
 		}
 		if (controller.yButton()){
-			downMultiplier = .5; //Press Y to enable regular mode, this will also enable high speed for main drive
+			downMultiplier = .5; //Press DOWN on Dpad to enable regular mode, this will allow the big motor to move half speed going down
 		}
-*/		
+		
 		if (isAtBottomLimit) {
 			startButtonPressed = false;
 			if (manualUpDown > 0){
@@ -90,7 +78,7 @@ public class LiftMechanism {
 				return;
 			}
 		}
-		bigMotor.set(bigMotorDrive * multiplier);
+		bigMotor.set(bigMotorDrive);
 	}
 	
 	private void rumble(){

@@ -29,7 +29,6 @@ public class Robot extends IterativeRobot {
 	private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 	private Autonomous autonomous = new Autonomous(myRobot, encDrive, prefs, gyro);
 
-
 	private void sendDataToSmartDashboard() {
 		SmartDashboard.putNumber("Right Encoder Distance", encDrive.getDistance());
 		SmartDashboard.putNumber("Gyroscope Angle", gyro.getAngle());

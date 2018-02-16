@@ -50,6 +50,12 @@ public class XboxController {
 	public double rightJoystickY(){
 		return stick.getRawAxis(5);
 	}
+	public boolean dPadUp(){
+		return (stick.getPOV() == 0);
+	}
+	public boolean dPadDown(){
+		return (stick.getPOV() == 180);
+	}
 	public void rumble(){
 		int intensity = 1;
 		stick.setRumble(RumbleType.kLeftRumble, intensity);

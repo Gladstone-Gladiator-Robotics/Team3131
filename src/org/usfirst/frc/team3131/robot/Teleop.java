@@ -11,6 +11,7 @@ package org.usfirst.frc.team3131.robot;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,9 +29,8 @@ public class Teleop {
 	private double lowSpeed = 0.7;
 	private boolean useHighSpeed = true;
 	AnalogInput infraRedRangefinder = new AnalogInput(0);
-	private Talon grabMotor = new Talon (7);
 	private LiftMechanism lift = new LiftMechanism(controller, new Talon (5), new Talon (4));
-	
+	private GrabMechanism grabber = new GrabMechanism();
 	
 	private static double deadband (double joystick, int power) {
 		if (joystick < 0 && power % 2 == 0) {
@@ -74,21 +74,21 @@ public class Teleop {
 	}
 	
 	private void grabMechanism() {
-		//int rangeFinderValue = infraRedRangefinder.getValue();
+		//int rangeFinderValue = infraRedRangefinder.getValue();   - Move this to GrabMechanism class if you want to get this working
 		if (controller.aButton() && controller.bButton()){
-			grabMotor.set(0);
+			grabber.stop();
 		}
 		else if (controller.aButton()) {
-			grabMotor.set(.7);
+			grabber.release();
 		}
 		else if (controller.bButton()) {
-			grabMotor.set(-.3);
+			grabber.grab();
 		}
 		/*else if ((4800/(rangeFinderValue - 20) >= 3)){
 			//grabMotor.set(0);
 		}*/
 		else {
-			grabMotor.set(0);
+			grabber.stop();
 		}
 	}
 	
