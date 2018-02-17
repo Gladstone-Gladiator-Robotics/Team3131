@@ -30,12 +30,6 @@ public class Autonomous {
 	private AutoCommand[] commands;
 	private SendableChooser<Integer> autoChooser;
 	
-
-	/* private void fmsTest(){ gameData =
-	 * DriverStation.getInstance().getGameSpecificMessage();
-	 * SmartDashboard.putBoolean("Left Switch is ours", gameData.charAt(0) =='L'); 
-	 * }*/
-	
 	private double getDistancePerPulse() {
 		double gear1 = 14;
 		double gear2 = 50;
@@ -47,6 +41,7 @@ public class Autonomous {
 		double circumference = 2 * Math.PI * radiusInInches;
 		return gearRatio * circumference / pulsePerMotorRev;
 	}
+	
 	private AutoCommand[] getCommandsForAutoForward() {
 		return new AutoCommand[] { new Forward(myRobot, (int) forwardTimeMS), };
 	}
@@ -58,7 +53,6 @@ public class Autonomous {
 	private AutoCommand[] getCommandsForAutoStop() {
 		return new AutoCommand[] {};
 	}
-	
 	
 	private AutoCommand[] getAutoCommands() {
 		switch (autoChooser.getSelected()) {
@@ -90,7 +84,4 @@ public class Autonomous {
 		}
 		myRobot.arcadeDrive(0, 0);
 	}
-
-
-
 }

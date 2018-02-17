@@ -61,7 +61,7 @@ public class XboxController {
 		stick.setRumble(RumbleType.kLeftRumble, intensity);
 		stick.setRumble(RumbleType.kRightRumble, intensity);
 	}
-	public void stopRumble() {
+	public void stopRumble(){
 		int intensity = 0;
 		stick.setRumble(RumbleType.kLeftRumble, intensity);
 		stick.setRumble(RumbleType.kRightRumble, intensity);

@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.Talon;
 
 public class GrabMechanism {
 	
-	private Talon grabMotor = new Talon(3);	
+	private Talon grabMotor = new Talon(3);
 	Preferences prefs = Preferences.getInstance();
 	
 	public void release(){

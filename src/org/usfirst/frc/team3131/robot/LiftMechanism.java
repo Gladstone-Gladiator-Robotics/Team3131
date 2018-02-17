@@ -39,10 +39,10 @@ public class LiftMechanism {
 	private void bigMotor(){
 		boolean isAtTopLimit = !bigMotorTopLimitSwitch.get();
 		boolean isAtBottomLimit = bigMotorBottomLimitSwitch.get();
-		double manualUpDown = ((controller.rightTrigger() * .5) - (controller.leftTrigger() * downMultiplier));
+		double manualUpDown = ((controller.rightTrigger() * .5) - (controller.leftTrigger() * downMultiplier)); //Right trigger goes up, left goes down
 		double autoUp = .7;
 		double autoDown = -.7;
-		double bigMotorDrive;
+		double bigMotorDrive; 
 		
 		if (backButtonPressed){
 			bigMotorDrive = autoUp;
@@ -59,13 +59,13 @@ public class LiftMechanism {
 		if (controller.dPadUp()){
 			downMultiplier = 1; //Press UP on Dpad to enable climb mode, this will allow the big motor to move FULL SPEED only when going down
 		}
-		if (controller.yButton()){
+		if (controller.dPadDown()){
 			downMultiplier = .5; //Press DOWN on Dpad to enable regular mode, this will allow the big motor to move half speed going down
 		}
 		
 		if (isAtBottomLimit) {
 			startButtonPressed = false;
-			if (manualUpDown > 0){
+			if (manualUpDown < 0){
 				bigMotor.set(0);
 				return;
 			}
@@ -73,7 +73,7 @@ public class LiftMechanism {
 		
 		if (isAtTopLimit){
 			backButtonPressed = false;
-			if (manualUpDown < 0){
+			if (manualUpDown > 0){
 				bigMotor.set(0);
 				return;
 			}

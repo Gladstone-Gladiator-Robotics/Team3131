@@ -1,13 +1,5 @@
 package org.usfirst.frc.team3131.robot;
 
-/* Controller Mapping
- * A = 1, B = 2, X = 3, Y = 4
- * LB = 5, RB = 6, Back = 7, Start = 8
- * Left TS = 9, Right TS = 10
- * Right Trigger = 3, Left Trigger = 2
- * 
- * This is useless now thanks to our XboxController class, just use controller.[button/axis here]()
- */
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
@@ -15,7 +7,6 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import java.util.ArrayList;
 import java.util.ArrayList;
 
 public class Teleop {
@@ -62,7 +53,7 @@ public class Teleop {
 
 	}
 	
-	private void infraRedRangeFinder() {
+/*	private void infraRedRangeFinder() { -- Not currently on any bot :/
 		int rangeFinderValue = infraRedRangefinder.getValue();
 		SmartDashboard.putNumber("Raw Range Finder Value", rangeFinderValue);
 		if(rangeFinderValue <= 20) {
@@ -71,7 +62,7 @@ public class Teleop {
 		else {
 			SmartDashboard.putNumber("Range Finder", (4800/(rangeFinderValue - 20)));
 		}
-	}
+	}*/
 	
 	private void grabMechanism() {
 		//int rangeFinderValue = infraRedRangefinder.getValue();   - Move this to GrabMechanism class if you want to get this working
@@ -96,7 +87,7 @@ public class Teleop {
 	public void teleopPeriodic() {
 		speedDrive();
 		grabMechanism();
-		infraRedRangeFinder();
+//		infraRedRangeFinder();
 		lift.liftMechanism();
 	}
 
