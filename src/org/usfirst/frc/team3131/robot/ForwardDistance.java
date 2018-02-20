@@ -1,10 +1,7 @@
 package org.usfirst.frc.team3131.robot;
 
-import java.io.Console;
-
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class ForwardDistance implements AutoCommand{
@@ -46,14 +43,9 @@ public class ForwardDistance implements AutoCommand{
 		}
 		myRobot.arcadeDrive(.65, -angle);
 		System.out.println("forwardjava angle = " + angle);
-		/*double correctionFactorWeight = Preferences.getInstance().getDouble("Correction Factor Weight", 1);
-		double correctionFactor = (1-(encRight.getDistance()/encLeft.getDistance())) * correctionFactorWeight;
-		myRobot.arcadeDrive(0.55,correctionFactor);
-		System.out.println("forwardjava correctionFactor = " + correctionFactor);*/
 	}
 
 	public boolean isFinished() {
-		
 		if (!isInitialized){
 			return false;
 		}

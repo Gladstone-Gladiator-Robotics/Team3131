@@ -9,11 +9,11 @@ public class GrabMechanism {
 	Preferences prefs = Preferences.getInstance();
 	
 	public void release(){
-		double releaseSpeed = prefs.getDouble("Release speed", .7);
+		double releaseSpeed = prefs.getDouble("Release speed", 1);
 		grabMotor.set(releaseSpeed);
 	}
 	public void grab(){
-		double grabSpeed = prefs.getDouble("Grab speed", -.3);
+		double grabSpeed = prefs.getDouble("Grab speed", -.5);
 		grabMotor.set(grabSpeed);
 	}
 	public void stop(){

@@ -71,7 +71,7 @@ public class Autonomous {
 		forwardTimeMS = prefs.getDouble("Forward Time in Milliseconds", 4000);
 		encoderDistanceInches = prefs.getDouble("Encoder Distance in Inches", 96);
 		commands = getAutoCommands();
-		kpValue = prefs.getDouble("Kp Value Set", .05); // this won't work - come back to this later
+		kpValue = prefs.getDouble("Kp Value Set", .05); // borked
 	}
 
 	public void autonomousPeriodic() {
