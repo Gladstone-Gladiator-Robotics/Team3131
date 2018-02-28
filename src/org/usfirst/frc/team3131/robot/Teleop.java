@@ -1,5 +1,6 @@
 package org.usfirst.frc.team3131.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -13,9 +14,11 @@ public class Teleop {
 	private XboxController controller = new XboxController(new Joystick(0));
 	private double highSpeed = 1;
 	private double lowSpeed = 0.7;
-	private boolean useHighSpeed = true;
+	private boolean useHighSpeed = false;
 	private LiftMechanism lift = new LiftMechanism(controller, new Talon (5), new Talon (4));
 	private GrabMechanism grabber = new GrabMechanism();
+	private Talon climbMotor = new Talon(7);
+	private DoubleSolenoid solenoid  = new DoubleSolenoid (0, 1);
 	
 	private static double deadband (double joystick, int power) {
 		if (joystick < 0 && power % 2 == 0) {
@@ -29,6 +32,12 @@ public class Teleop {
 	private void speedDrive() {
 		int expo = 2;
 		double speedMultiplier;
+		
+		if (isClimberActivated()) {
+			myRobot.arcadeDrive(0, 0);
+			return;
+		}
+		
 		if (useHighSpeed) {
 			speedMultiplier = highSpeed;
 			if (controller.yButton()) {
@@ -42,7 +51,7 @@ public class Teleop {
 			}
 		}
 		myRobot.arcadeDrive(
-				-speedMultiplier * deadband(controller.leftJoystickY(), expo), 
+				speedMultiplier * deadband(controller.leftJoystickY(), expo), 
 				-speedMultiplier * deadband(controller.rightJoystickX(), expo));
 
 	}
@@ -62,11 +71,38 @@ public class Teleop {
 		}
 	}
 	
+	private boolean isClimberActivated() {
+		return controller.rightStickButton();
+	}
+	
+	private void climbMechanism() {
+		if (isClimberActivated()){
+			climbMotor.set(controller.rightJoystickY());
+		}
+		else {
+			climbMotor.set(0);
+		}
+	}
+	private void grabPiston() {
+	   if (controller.aButton() && controller.bButton()) {
+		   solenoid.set(DoubleSolenoid.Value.kOff);
+	   }
+	   else if (controller.aButton()) {
+		   solenoid.set(DoubleSolenoid.Value.kForward);
+	   }
+	   else if (controller.bButton()) {
+		   solenoid.set(DoubleSolenoid.Value.kReverse);
+	   }
+	   else {
+		   solenoid.set(DoubleSolenoid.Value.kOff);
+	   }
+	}
 	
 	public void teleopPeriodic() {
 		speedDrive();
 		grabMechanism();
 		lift.liftMechanism();
+		climbMechanism();
 	}
 
 }

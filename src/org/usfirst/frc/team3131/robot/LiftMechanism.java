@@ -7,21 +7,21 @@ public class LiftMechanism {
 
 	public LiftMechanism(XboxController controller, Talon stageOneMotor, Talon stageTwoMotor){
 		this.controller = controller;
-		this.smallMotor = stageOneMotor;
-		this.bigMotor = stageTwoMotor;
+		this.bigMotor = stageOneMotor;
+		this.smallMotor = stageTwoMotor;
 	}
 
 	private XboxController controller;
 	private Talon smallMotor;
 	private Talon bigMotor;
-	private DigitalInput bigMotorTopLimitSwitch = new DigitalInput(5);
-	private DigitalInput bigMotorBottomLimitSwitch = new DigitalInput(6);
+	private DigitalInput bigMotorTopLimitSwitch = new DigitalInput(6);
+	private DigitalInput bigMotorBottomLimitSwitch = new DigitalInput(5);
 	public boolean backButtonPressed;
 	public boolean startButtonPressed;
-	public double downMultiplier = .5; //To swap between Drive and Climb mode for the big motor, where it is set to .5(half speed) is drive mode and 1(full speed) is climb mode
+	public double downMultiplier = .25; //To swap between Drive and Climb mode for the big motor, where it is set to .5(half speed) is drive mode and 1(full speed) is climb mode
 	
-	private void smallMotor(){
-		double smallMotorSpeed = 1;
+	private void smallMotor(){ // Call this "top lift motor" or "grab mechanism lift" around electrical
+		double smallMotorSpeed = .75;
 		
 		if (controller.rightBumper()){
 			smallMotor.set(smallMotorSpeed);
@@ -34,15 +34,18 @@ public class LiftMechanism {
 		}
 	}
 	
-	private void bigMotor(){
-		boolean isAtTopLimit = !bigMotorTopLimitSwitch.get();
-		boolean isAtBottomLimit = bigMotorBottomLimitSwitch.get();
-		double manualUpDown = ((controller.rightTrigger() * .5) - (controller.leftTrigger() * downMultiplier)); //Right trigger goes up, left goes down
+	private void bigMotor(){ // Call this "bottom and middle lift motors" or "arm lift" around electrical
+		boolean isAtTopLimit = bigMotorTopLimitSwitch.get();
+		boolean isAtBottomLimit = !bigMotorBottomLimitSwitch.get();
+		double manualUpDown = ((controller.rightTrigger() * .35) - (controller.leftTrigger() * downMultiplier)); //Right trigger goes up, left goes down
 		double autoUp = .7;
 		double autoDown = -.7;
-		double bigMotorDrive; 
+		double bigMotorDrive;
+
+/*		if (controller.backButton()){backButtonPressed = true;}
+		if (controller.startButton()){startButtonPressed = true;}*/
 		
-		if (backButtonPressed){
+/*		if (backButtonPressed){
 			bigMotorDrive = autoUp;
 		}
 		else if (startButtonPressed){
@@ -50,19 +53,17 @@ public class LiftMechanism {
 		}
 		else {
 			bigMotorDrive = manualUpDown;
-			backButtonPressed = controller.backButton();
-			startButtonPressed = controller.startButton();
-		}
+		}*/
 		
 		if (controller.dPadUp()){
-			downMultiplier = 1; //Press UP on Dpad to enable climb mode, this will allow the big motor to move FULL SPEED only when going down
+			downMultiplier = .75; //Press UP on Dpad to enable climb mode, this will allow the big motor to move FULL SPEED only when going down
 		}
 		if (controller.dPadDown()){
-			downMultiplier = .5; //Press DOWN on Dpad to enable regular mode, this will allow the big motor to move half speed going down
+			downMultiplier = .35; //Press DOWN on Dpad to enable regular mode, this will allow the big motor to move half speed going down
 		}
-		
+	
 		if (isAtBottomLimit) {
-			startButtonPressed = false;
+//			startButtonPressed = false;
 			if (manualUpDown < 0){
 				bigMotor.set(0);
 				return;
@@ -70,23 +71,23 @@ public class LiftMechanism {
 		}
 		
 		if (isAtTopLimit){
-			backButtonPressed = false;
+//			backButtonPressed = false;
 			if (manualUpDown > 0){
 				bigMotor.set(0);
 				return;
 			}
 		}
-		bigMotor.set(bigMotorDrive);
+		bigMotor.set(manualUpDown);
 	}
 	
 	private void rumble(){
 		if ((controller.rightTrigger() > 0 && controller.leftTrigger() > 0) || (controller.rightBumper() && controller.leftBumper())){
 			controller.rumble();
-			backButtonPressed = false;
+//			backButtonPressed = false;
 		}
 		else {
 			controller.stopRumble();
-			backButtonPressed = false;
+//			backButtonPressed = false;
 		}
 	}
 	
@@ -94,6 +95,5 @@ public class LiftMechanism {
 		rumble();
 		smallMotor();
 		bigMotor();
-		
 	}	
 }

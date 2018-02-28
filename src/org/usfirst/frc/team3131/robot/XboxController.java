@@ -56,6 +56,12 @@ public class XboxController {
 	public boolean dPadDown(){
 		return (stick.getPOV() == 180);
 	}
+	public boolean rightStickButton(){
+		return stick.getRawButton(10);
+	}
+	public boolean leftStickButton(){
+		return stick.getRawButton(9);
+	}
 	public void rumble(){
 		int intensity = 1;
 		stick.setRumble(RumbleType.kLeftRumble, intensity);

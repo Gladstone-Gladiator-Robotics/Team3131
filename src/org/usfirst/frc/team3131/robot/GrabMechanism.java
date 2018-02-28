@@ -13,7 +13,7 @@ public class GrabMechanism {
 		grabMotor.set(releaseSpeed);
 	}
 	public void grab(){
-		double grabSpeed = prefs.getDouble("Grab speed", -.5);
+		double grabSpeed = prefs.getDouble("Grab speed", -.38);
 		grabMotor.set(grabSpeed);
 	}
 	public void stop(){
