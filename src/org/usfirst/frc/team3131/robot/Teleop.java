@@ -19,6 +19,8 @@ public class Teleop {
 	private GrabMechanism grabber = new GrabMechanism();
 	private Talon climbMotor = new Talon(7);
 	private DoubleSolenoid solenoid  = new DoubleSolenoid (0, 1);
+	private boolean buttonDeButton = false;
+	private double delayThing = 0;
 	
 	private static double deadband (double joystick, int power) {
 		if (joystick < 0 && power % 2 == 0) {
@@ -84,18 +86,33 @@ public class Teleop {
 		}
 	}
 	private void grabPiston() {
-	   if (controller.aButton() && controller.bButton()) {
-		   solenoid.set(DoubleSolenoid.Value.kOff);
-	   }
-	   else if (controller.aButton()) {
-		   solenoid.set(DoubleSolenoid.Value.kForward);
-	   }
-	   else if (controller.bButton()) {
-		   solenoid.set(DoubleSolenoid.Value.kReverse);
-	   }
-	   else {
-		   solenoid.set(DoubleSolenoid.Value.kOff);
-	   }
+		/*if (controller.aButton()){buttonDeButton = true;}
+		if (buttonDeButton){
+			delayThing = 0;
+			buttonDeButton = false;
+			if (delayThing >10) {
+				delayThing++;
+			}
+			else {
+				buttonDeButton = false;
+			}
+		}*/
+		if (controller.aButton() && controller.bButton()) {
+			solenoid.set(DoubleSolenoid.Value.kOff);
+		}
+		else if (controller.aButton()) {
+			delayThing++;
+			if (delayThing >= 10) {
+				solenoid.set(DoubleSolenoid.Value.kForward);
+			}
+		}
+		else if (controller.bButton()) {
+			solenoid.set(DoubleSolenoid.Value.kReverse);
+		}
+		else {
+			delayThing = 0;
+			solenoid.set(DoubleSolenoid.Value.kOff);
+		}
 	}
 	
 	public void teleopPeriodic() {
@@ -103,6 +120,7 @@ public class Teleop {
 		grabMechanism();
 		lift.liftMechanism();
 		climbMechanism();
+		grabPiston();
 	}
 
 }
