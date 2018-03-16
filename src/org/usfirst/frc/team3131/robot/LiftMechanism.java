@@ -21,7 +21,7 @@ public class LiftMechanism {
 	public double downMultiplier = .25; //To swap between Drive and Climb mode for the big motor, where it is set to .5(half speed) is drive mode and 1(full speed) is climb mode
 	
 	private void smallMotor(){ // Call this "top lift motor" or "grab mechanism lift" around electrical
-		double smallMotorSpeed = .75;
+		double smallMotorSpeed = 100;
 		
 		if (controller.rightBumper()){
 			smallMotor.set(smallMotorSpeed);

@@ -12,9 +12,9 @@ public class Teleop {
 	
 	private DifferentialDrive myRobot;
 	private XboxController controller = new XboxController(new Joystick(0));
-	private double highSpeed = 1;
-	private double lowSpeed = 0.7;
-	private boolean useHighSpeed = false;
+	private double highSpeed = 0.7;
+	private double lowSpeed = 0.35;
+	private boolean useHighSpeed = true;
 	private LiftMechanism lift = new LiftMechanism(controller, new Talon (5), new Talon (4));
 	private GrabMechanism grabber = new GrabMechanism();
 	private Talon climbMotor = new Talon(7);
