@@ -1,22 +1,18 @@
 package org.usfirst.frc.team3131.robot;
 
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class GrabMechanism {
 	
-	private Talon grabMotor = new Talon(3);
-	Preferences prefs = Preferences.getInstance();
-	
+	private DoubleSolenoid solenoid  = new DoubleSolenoid (0, 1); //0 forward, 1 reverse
+		
 	public void release(){
-		double releaseSpeed = prefs.getDouble("Release speed", 1);
-		grabMotor.set(releaseSpeed);
+		solenoid.set(DoubleSolenoid.Value.kForward);
 	}
 	public void grab(){
-		double grabSpeed = prefs.getDouble("Grab speed", -.38);
-		grabMotor.set(grabSpeed);
+		solenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 	public void stop(){
-		grabMotor.set(0);
+		solenoid.set(DoubleSolenoid.Value.kOff);
 	}
 }
