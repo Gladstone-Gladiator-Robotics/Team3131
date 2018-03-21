@@ -15,11 +15,10 @@ public class Teleop {
 	private double highSpeed = 0.7;
 	private double lowSpeed = 0.35;
 	private boolean useHighSpeed = true;
-	private LiftMechanism lift = new LiftMechanism(controller, new Talon (5), new Talon (4));
+	private LiftMechanism lift = new LiftMechanism(controller, new Talon (4));
 	private GrabMechanism grabber = new GrabMechanism();
 	private Talon climbMotor = new Talon(7);
 	private DoubleSolenoid solenoid  = new DoubleSolenoid (0, 1);
-	private boolean buttonDeButton = false;
 	private double delayThing = 0;
 	
 	private static double deadband (double joystick, int power) {

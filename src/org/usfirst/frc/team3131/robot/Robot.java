@@ -21,13 +21,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * PWM :
  * 1 - Left drive motor
  * 2 - Right drive motor
- * 3 - Grab motors
- * 4 - Stage two(small) motor
- * 5 - Stage one(big) motor
+ * 4 - Lift motor
  * DIO :
- * 0 and 1 - Input and Output for drive encoder
- * 5 - Top limit switch for big motor
- * 6 - Bottom limit switch for big motor
+ * 5 - Top limit switch
+ * 6 - Bottom limit switch (neither of these exist yet)
  */
 
 public class Robot extends IterativeRobot {
