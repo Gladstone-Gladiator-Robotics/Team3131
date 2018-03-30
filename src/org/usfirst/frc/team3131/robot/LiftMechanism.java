@@ -14,23 +14,52 @@ public class LiftMechanism {
 	private Talon liftMotor;
 	private DigitalInput topLimitSwitch = new DigitalInput(6);
 	private DigitalInput bottomLimitSwitch = new DigitalInput(5);
-	//public boolean backButtonPressed;
-	//public boolean startButtonPressed;
+	private double liftMotorSpeed;
+	private boolean backButtonPressed;
+	private boolean startButtonPressed;
+	private boolean previousBackButtonPressed;
+	private boolean previousStartButtonPressed;
 	
-	private void liftMotor(){ 
-		double liftMotorSpeed = (controller.rightTrigger() - controller.leftTrigger());
+	private void liftMotor(){
+		double autoLift = 1;
+		double manualLift = (controller.leftTrigger() - controller.rightTrigger());
 		boolean isAtTopLimit = topLimitSwitch.get();
 		boolean isAtBottomLimit = bottomLimitSwitch.get();
 		
+		if (controller.backButton() && !previousBackButtonPressed) {
+			backButtonPressed = !backButtonPressed;  //"boolean = !boolean" toggles it between true and false, neat!
+			startButtonPressed = false;
+		}
+		if (controller.startButton() && !previousStartButtonPressed) {
+			startButtonPressed = !startButtonPressed; 
+			backButtonPressed = false;
+		}
+		previousBackButtonPressed = controller.backButton();
+		previousStartButtonPressed = controller.startButton();
+		
+		
+		if (backButtonPressed) {
+			liftMotorSpeed = autoLift;
+		}
+		else if (startButtonPressed) {
+			liftMotorSpeed = -autoLift;
+		}
+		else {
+			liftMotorSpeed = manualLift;
+		}
+		
+		
  		if (isAtBottomLimit) {
-			if (liftMotorSpeed < 0){
+ 			backButtonPressed = false;
+			if (liftMotorSpeed > 0){
 				liftMotor.set(0);
 				return;
 			}
 		}
 		
 		if (isAtTopLimit){
-			if (liftMotorSpeed > 0){
+			startButtonPressed = false;
+			if (liftMotorSpeed < 0){
 				liftMotor.set(0);
 				return;
 			}

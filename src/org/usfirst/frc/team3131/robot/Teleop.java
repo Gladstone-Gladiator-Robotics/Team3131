@@ -49,8 +49,8 @@ public class Teleop {
 			}
 		}
 		myRobot.arcadeDrive(
-				speedMultiplier * deadband(controller.leftJoystickY(), expo), 
-				-speedMultiplier * deadband(controller.rightJoystickX(), expo));
+				-speedMultiplier * deadband(controller.leftJoystickY(), expo), 
+				speedMultiplier * deadband(controller.rightJoystickX(), expo));
 
 	}
 	

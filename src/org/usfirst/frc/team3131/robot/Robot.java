@@ -74,7 +74,7 @@ public class Robot extends IterativeRobot {
 
 	private void setMotorDirections() {
 		leftDriveTalon.setInverted(prefs.getBoolean("Left Motor Inverted", true));
-		rightDriveTalon.setInverted(prefs.getBoolean("Right Motor Inverted", true));
+		rightDriveTalon.setInverted(prefs.getBoolean("Right Motor Inverted", false));
 	}
 	
 	public void teleopPeriodic() {
