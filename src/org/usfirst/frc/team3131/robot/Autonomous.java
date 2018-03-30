@@ -47,7 +47,7 @@ public class Autonomous {
 	}
 
 	private AutoCommand[] getCommandsForAutoEncoder() {
-		return new AutoCommand[] { new ForwardDistance(myRobot, encDrive, encoderDistanceInches, gyro, kpValue) };
+		return new AutoCommand[] { new Forward(myRobot, (int) forwardTimeMS), new AutonomousRelease(), };
 	}
 
 	private AutoCommand[] getCommandsForAutoStop() {

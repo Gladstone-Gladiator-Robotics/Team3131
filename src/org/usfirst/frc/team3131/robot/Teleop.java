@@ -15,7 +15,7 @@ public class Teleop {
 	private double lowSpeed = 0.35;
 	private boolean useHighSpeed = true;
 	private LiftMechanism lift = new LiftMechanism(controller, new Talon (4));
-	private GrabMechanism grabber = new GrabMechanism();
+	private GrabMechanism grabber = GrabMechanism.getInstance();
 	//private Talon climbMotor = new Talon(7);
 	
 	private static double deadband (double joystick, int power) {

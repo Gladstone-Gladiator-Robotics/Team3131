@@ -4,6 +4,14 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class GrabMechanism {
 	
+	private static GrabMechanism instance;
+	public static synchronized GrabMechanism getInstance() {
+		if (instance == null) {
+			instance = new GrabMechanism();
+		}
+		return instance;
+	}
+
 	private DoubleSolenoid solenoid  = new DoubleSolenoid (0, 1); //0 forward, 1 reverse
 		
 	public void release(){
