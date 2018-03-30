@@ -28,14 +28,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 
 public class Robot extends IterativeRobot {
-	private DifferentialDrive myRobot;
+	private Talon leftDriveTalon = new Talon(1);
+	private Talon rightDriveTalon = new Talon(2);
+	private DifferentialDrive myRobot = new DifferentialDrive(leftDriveTalon, rightDriveTalon);
 	private Teleop teleop;
 	private Encoder encDrive = new Encoder(0, 1, true, Encoder.EncodingType.k4X);
 	private Preferences prefs = Preferences.getInstance();
 	// PowerDistributionPanel pdp = new PowerDistributionPanel();
 	String gameData;
-	private Talon leftDriveTalon = new Talon(1);
-	private Talon rightDriveTalon = new Talon(2);
 	private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 	private Autonomous autonomous = new Autonomous(myRobot, encDrive, prefs, gyro);
 
@@ -48,7 +48,6 @@ public class Robot extends IterativeRobot {
 	  * used for any initialization code.
 	  */
 	public void robotInit() {
-		myRobot = new DifferentialDrive(leftDriveTalon, rightDriveTalon);
 		myRobot.setDeadband(0);
 		teleop = new Teleop(myRobot);
 		gyro.calibrate();

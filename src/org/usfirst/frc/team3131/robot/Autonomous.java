@@ -15,7 +15,7 @@ public class Autonomous {
 		this.gyro = gyro;
 		autoChooser = new SendableChooser<Integer>();
 		autoChooser.addDefault("Only Forward", 0);
-		autoChooser.addObject("Gyro Forward (BUSTED)", 1);
+		autoChooser.addObject("Lift and Release", 1);
 		autoChooser.addObject("Do nothing", 2);
 		SmartDashboard.putData("Autonomous Chooser", autoChooser);
 	}
@@ -46,8 +46,8 @@ public class Autonomous {
 		return new AutoCommand[] { new Forward(myRobot, (int) forwardTimeMS), };
 	}
 
-	private AutoCommand[] getCommandsForAutoEncoder() {
-		return new AutoCommand[] { new Forward(myRobot, (int) forwardTimeMS), new AutonomousRelease(), };
+	private AutoCommand[] getCommandsForAutoCube() {
+		return new AutoCommand[] { new AutonomousLift(), new Forward(myRobot, 2000), new AutonomousRelease(), };
 	}
 
 	private AutoCommand[] getCommandsForAutoStop() {
@@ -59,7 +59,7 @@ public class Autonomous {
 		case 0:
 			return getCommandsForAutoForward();
 		case 1:
-			return getCommandsForAutoEncoder();
+			return getCommandsForAutoCube();
 		case 2:
 		default:
 			return getCommandsForAutoStop();

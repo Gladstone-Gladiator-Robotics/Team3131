@@ -5,25 +5,35 @@ import edu.wpi.first.wpilibj.Talon;
 
 public class LiftMechanism {
 
-	public LiftMechanism(XboxController controller, Talon liftMotor){
+	public LiftMechanism(XboxController controller){
 		this.controller = controller;
-		this.liftMotor = liftMotor;
 	}
 
 	private XboxController controller;
-	private Talon liftMotor;
-	private DigitalInput topLimitSwitch = new DigitalInput(6);
-	private DigitalInput bottomLimitSwitch = new DigitalInput(5);
+	private static Talon liftMotor = new Talon (4);
+	private static DigitalInput topLimitSwitch = new DigitalInput(6);
+	private static DigitalInput bottomLimitSwitch = new DigitalInput(5);
 	private double liftMotorSpeed;
 	private boolean backButtonPressed;
 	private boolean startButtonPressed;
 	private boolean previousBackButtonPressed;
 	private boolean previousStartButtonPressed;
 	
+	public static void autoLift() {
+		if (isAtTopLimit()) {
+			liftMotor.set(0);
+		} else {
+			liftMotor.set(-1);
+		}
+	}
+	
+	public static boolean isAtTopLimit() {
+		return topLimitSwitch.get();
+	}
+	
 	private void liftMotor(){
 		double autoLift = 1;
 		double manualLift = (controller.leftTrigger() - controller.rightTrigger());
-		boolean isAtTopLimit = topLimitSwitch.get();
 		boolean isAtBottomLimit = bottomLimitSwitch.get();
 		
 		if (controller.backButton() && !previousBackButtonPressed) {
@@ -57,7 +67,7 @@ public class LiftMechanism {
 			}
 		}
 		
-		if (isAtTopLimit){
+		if (isAtTopLimit()){
 			startButtonPressed = false;
 			if (liftMotorSpeed < 0){
 				liftMotor.set(0);

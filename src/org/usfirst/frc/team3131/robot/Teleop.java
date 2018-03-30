@@ -14,7 +14,7 @@ public class Teleop {
 	private double highSpeed = 0.7;
 	private double lowSpeed = 0.35;
 	private boolean useHighSpeed = true;
-	private LiftMechanism lift = new LiftMechanism(controller, new Talon (4));
+	private LiftMechanism lift = new LiftMechanism(controller);
 	private GrabMechanism grabber = GrabMechanism.getInstance();
 	//private Talon climbMotor = new Talon(7);
 	
