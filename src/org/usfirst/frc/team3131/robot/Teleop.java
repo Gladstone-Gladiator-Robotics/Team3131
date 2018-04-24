@@ -59,10 +59,10 @@ public class Teleop {
 	}
 	
 	private void cannonLift() {
-		if (controller.dPadUp()) {
+		if (controller.rightBumper()) {
 			cLift.up();
 		}
-		else if(controller.dPadDown()) {
+		else if(controller.rightTrigger() > 0) {
 			cLift.down();
 		}
 		else {
