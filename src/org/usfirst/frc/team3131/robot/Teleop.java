@@ -1,7 +1,7 @@
 package org.usfirst.frc.team3131.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class Teleop {
@@ -14,9 +14,12 @@ public class Teleop {
 	private double highSpeed = 0.77;
 	private double lowSpeed = 0.5;
 	private boolean useHighSpeed = true;
-	private LiftMechanism lift = new LiftMechanism(controller);
-	private GrabMechanism grabber = GrabMechanism.getInstance();
-	//private Talon climbMotor = new Talon(7);
+//	private LiftMechanism lift = new LiftMechanism(controller);
+//	private GrabMechanism grabber = GrabMechanism.getInstance();
+	private CannonLift cLift = new CannonLift();
+	private Solenoid solenoid1 = new Solenoid(0);
+	private Solenoid solenoid2 = new Solenoid(1);
+	private Solenoid solenoid3 = new Solenoid(2);
 	
 	private static double deadband (double joystick, int power) {
 		if (joystick < 0 && power % 2 == 0) {
@@ -28,14 +31,9 @@ public class Teleop {
 	}
 
 	private void speedDrive() {
-		int expo = 2;
+		int expo = 2; //The deadband is essentially a parabola, this sets the exponent for the curve
 		double speedMultiplier;
-		
-		/*if (isClimberActivated()) {
-			myRobot.arcadeDrive(0, 0);
-			return;
-		}*/
-		
+				
 		if (useHighSpeed) {
 			speedMultiplier = highSpeed;
 			if (controller.yButton()) {
@@ -54,39 +52,27 @@ public class Teleop {
 
 	}
 	
-	/*private boolean isClimberActivated() {
-		return controller.rightStickButton();
+	private void airCannons() {
+		solenoid1.set(controller.xButton());
+		solenoid2.set(controller.yButton());
+		solenoid3.set(controller.bButton());
 	}
 	
-	private void climbMechanism() {
-		if (isClimberActivated()){
-			climbMotor.set(controller.rightJoystickY());
+	private void cannonLift() {
+		if (controller.dPadUp()) {
+			cLift.up();
+		}
+		else if(controller.dPadDown()) {
+			cLift.down();
 		}
 		else {
-			climbMotor.set(0);
-		}
-	}*/
-	private void grabPiston() {
-		if (controller.rightBumper() && controller.leftBumper()) {
-			grabber.stop();
-		}
-		else if (controller.leftBumper()) {
-			grabber.release();
-		}
-		else if (controller.rightBumper()) {
-			grabber.grab();
-		}
-		else {
-			grabber.stop();
+			cLift.stop();
 		}
 	}
 	
 	public void teleopPeriodic() {
 		speedDrive();
-		grabPiston();
-		lift.liftMechanism();
-		//climbMechanism();
-		grabPiston();
+		airCannons();
+		cannonLift();
 	}
-
 }
