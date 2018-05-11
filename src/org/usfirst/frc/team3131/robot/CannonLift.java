@@ -4,7 +4,11 @@ import edu.wpi.first.wpilibj.Talon;
 
 public class CannonLift {
 
-	private Talon cLiftMotor = new Talon(3);
+	public CannonLift(Talon cLiftMotor) {
+		this.cLiftMotor = cLiftMotor;
+	}
+	private Talon cLiftMotor;
+	public double cLiftSpeed;
 	
 	public void up() {
 		cLiftMotor.set(1);
@@ -16,3 +20,4 @@ public class CannonLift {
 		cLiftMotor.set(0);
 	}
 }
+// I think this is totally useless actually :(
