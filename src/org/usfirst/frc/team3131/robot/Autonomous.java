@@ -51,6 +51,8 @@ public class Autonomous {
 	private AutoCommand[] getCommandsForAutoCube() {
 		return new AutoCommand[] { 
 				new AutonomousLift(), new Forward(myRobot, 2550),  new AutonomousRelease(), };
+
+//		return new AutoCommand[] { new AutonomousLift(), new Forward(myRobot, 2600), new AutonomousRelease()};
 	}
 
 	private AutoCommand[] getCommandsForAutoStop() {

@@ -21,10 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * PWM :
  * 1 - Left drive motor
  * 2 - Right drive motor
- * 4 - Lift motor
- * DIO :
- * 5 - Top limit switch
- * 6 - Bottom limit switch (neither of these exist yet)
+ * 3 - Cannons Aim motor
  */
 
 public class Robot extends IterativeRobot {
@@ -34,7 +31,6 @@ public class Robot extends IterativeRobot {
 	private Teleop teleop;
 	private Encoder encDrive = new Encoder(0, 1, true, Encoder.EncodingType.k4X);
 	private Preferences prefs = Preferences.getInstance();
-	// PowerDistributionPanel pdp = new PowerDistributionPanel();
 	String gameData;
 	private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 	private Autonomous autonomous = new Autonomous(myRobot, encDrive, prefs, gyro);
@@ -44,16 +40,16 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Gyroscope Angle", gyro.getAngle());
 	}
 	
-	 /* This function is run when the robot is first started up and should be
-	  * used for any initialization code.
-	  */
+	/* Init functions are run ONCE when the robot is first started up and should be
+	 * used for any initialization code. */
 	public void robotInit() {
 		myRobot.setDeadband(0);
 		teleop = new Teleop(myRobot);
 		gyro.calibrate();
 		CameraServer.getInstance().startAutomaticCapture();
 	}
-
+	/* Periodic functions are ran several times a second the entire time the robot
+	 * is enabled */
 	public void robotPeriodic() {
 		setMotorDirections();
 		sendDataToSmartDashboard();

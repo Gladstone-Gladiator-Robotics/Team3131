@@ -12,7 +12,7 @@ public class GrabMechanism {
 		return instance;
 	}
 
-	private DoubleSolenoid solenoid  = new DoubleSolenoid (0, 1); //0 forward, 1 reverse
+	private DoubleSolenoid solenoid  = new DoubleSolenoid (3, 4); //3 forward, 4 reverse
 		
 	public void release(){
 		solenoid.set(DoubleSolenoid.Value.kForward);

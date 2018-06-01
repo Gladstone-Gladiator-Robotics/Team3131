@@ -10,7 +10,7 @@ public class Forward extends TimedAutoCommand{
 	}
 	
 	DifferentialDrive myRobot; 
-	private Ramp ramp = new Ramp(0, 0, 0.17);
+	private Ramp ramp = new Ramp(0, 0, 0.2);
 	
 	void init() {
 		ramp.reset();
