@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3131.robot;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -15,8 +16,9 @@ public class Autonomous {
 		this.gyro = gyro;
 		autoChooser = new SendableChooser<Integer>();
 		autoChooser.addDefault("Only Forward", 0);
-		autoChooser.addObject("Lift and Release", 1);
-		autoChooser.addObject("Do nothing", 2);
+		autoChooser.addObject("Left switch", 1);
+		autoChooser.addObject("11 Second Delay and Forward", 2);
+		autoChooser.addObject("Do nothing", 3);
 		SmartDashboard.putData("Autonomous Chooser", autoChooser);
 	}
 	
@@ -47,11 +49,15 @@ public class Autonomous {
 	}
 
 	private AutoCommand[] getCommandsForAutoCube() {
-		return new AutoCommand[] { new AutonomousLift(), new Forward(myRobot, 2000), new AutonomousRelease(), };
+		return new AutoCommand[] { 
+				new AutonomousLift(), new Forward(myRobot, 2550),  new AutonomousRelease(), };
 	}
 
 	private AutoCommand[] getCommandsForAutoStop() {
 		return new AutoCommand[] {};
+	}
+	private AutoCommand[] getCommandsForAutoDelayForward() {
+		return new AutoCommand[] { new AutoDelay(11), new Forward(myRobot, 3000), }; 
 	}
 	
 	private AutoCommand[] getAutoCommands() {
@@ -61,6 +67,7 @@ public class Autonomous {
 		case 1:
 			return getCommandsForAutoCube();
 		case 2:
+			return getCommandsForAutoDelayForward();
 		default:
 			return getCommandsForAutoStop();
 		}
@@ -68,7 +75,7 @@ public class Autonomous {
 	
 	public void autonomousInit() {
 		encDrive.setDistancePerPulse(getDistancePerPulse());
-		forwardTimeMS = prefs.getDouble("Forward Time in Milliseconds", 4000);
+		forwardTimeMS = prefs.getDouble("Forward Time in Milliseconds", 3000);
 		encoderDistanceInches = prefs.getDouble("Encoder Distance in Inches", 96);
 		commands = getAutoCommands();
 		kpValue = prefs.getDouble("Kp Value Set", .05); // borked
